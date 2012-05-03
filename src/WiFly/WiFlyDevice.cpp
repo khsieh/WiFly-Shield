@@ -402,6 +402,42 @@ boolean WiFlyDevice::join(const char *ssid) {
   //       not required? (Probably not necessary as I think module
   //       ignores them when they're not required.)
 
+  // Kane Hsieh -- replace any spaces in SSID with a '$' before passing to Ron's code
+  // Simple iteration over the SSID to make ssid_no_spaces
+  
+  int ssid_len = strlen(ssid);
+  char ssid_no_spaces[ssid_len]; // create new SSID of same length
+  
+  for(int i = 0; ssid[i] != '\0'; i++)
+  {
+      if(ssid[i] == 32) // space
+                 ssid_no_spaces[i] = '$'; // replace space with '$'
+      else
+          ssid_no_spaces[i] = ssid[i];
+  }
+  ssid_no_spaces[ssid_len] = '\0'; // null terminator
+  
+  // end Kane's code
+  
+  
+  // Ron Guest -- begin change to support space in SSID
+  // First we set the SSID (putting the SSID on the join command doesn't work
+  
+  Serial.println("Setting SSID using RK method");
+  sendCommand("set wlan ssid ",true);
+  sendCommand(ssid_no_spaces); // this used to be (ssid)
+  if (sendCommand("join ", false, "Associated!")) {
+    // TODO: Extract information from complete response?
+    // TODO: Change this to still work when server mode not active
+    waitForResponse("Listen on ");
+    skipRemainderOfResponse();
+    return true;
+  }
+  
+    // Ron Guest -- end change. Uncomment the below block and delete this one to restore original code
+    
+    // This is old code
+    /*
   sendCommand("join ", true);
   // TODO: Actually detect failure to associate
   // TODO: Handle connecting to Adhoc device
@@ -412,7 +448,10 @@ boolean WiFlyDevice::join(const char *ssid) {
     skipRemainderOfResponse();
     return true;
   }
+  */
+  
   return false;
+
 }
 
 
