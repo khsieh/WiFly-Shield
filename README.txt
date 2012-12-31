@@ -9,7 +9,7 @@ I've modified Ron's code to allow SSIDs with spaces to be passed to join() and i
 Enjoy!
 Kane Hsieh
 www.kanehsieh.com
-khsieh@post.harvard.edu
+kane@post.harvard.edu
 
 --
 
